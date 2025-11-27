@@ -7,7 +7,7 @@
 
         <!-- Email Address / Username -->
         <div>
-            <x-input-label for="login" :value="__('Email atau Username')" class="dark:text-gray-300" />
+            <x-input-label for="login" :value="__('Username')" class="dark:text-gray-300" />
             <x-text-input id="login" class="block mt-1 w-full dark:bg-gray-900 dark:text-gray-300 dark:border-gray-700" type="text" name="login" :value="old('login')" required autofocus autocomplete="username" />
             <x-input-error :messages="$errors->get('login')" class="mt-2" />
         </div>

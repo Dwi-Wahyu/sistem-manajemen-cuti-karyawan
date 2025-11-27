@@ -20,15 +20,12 @@ return new class extends Migration
             $table->string('password');
             $table->enum('role', ['admin', 'hrd', 'division_head', 'employee'])->default('employee'); 
 
-            $table->unsignedBigInteger('division_id')->nullable();
             $table->unsignedInteger('initial_annual_leave_quota')->default(12); 
             $table->unsignedInteger('current_annual_leave_quota')->default(12); 
             $table->date('join_date'); 
             $table->string('phone_number')->nullable();
             $table->text('address')->nullable();
             $table->boolean('is_active')->default(true);
-
-            $table->foreign('division_id')->references('id')->on('divisions')->onDelete('set null');
 
             $table->rememberToken();
             $table->timestamps();

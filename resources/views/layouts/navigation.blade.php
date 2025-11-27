@@ -5,31 +5,25 @@
             <div class="flex">
                 <!-- Logo -->
                 <div class="shrink-0 flex items-center">
-                    <a href="{{ route('dashboard') }}">
-                        <x-application-logo class="block h-9 w-auto fill-current text-gray-800 dark:text-gray-200" />
-                    </a>
+                    <img src="/cuti-plus.png" class="w-7 h-7" alt="">
                 </div>
 
                 <!-- Navigation Links -->
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                    {{-- 1. DASHBOARD (Semua User) --}}
                     <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                         {{ __('Dashboard') }}
                     </x-nav-link>
 
-                    {{-- 2. CUTI SAYA (Semua User) --}}
                     <x-nav-link :href="route('leave-requests.index')" :active="request()->routeIs('leave-requests.*')">
                         {{ __('Cuti Saya') }}
                     </x-nav-link>
 
-                    {{-- 3. PERSETUJUAN CUTI (Hanya Approver: Admin, HRD, Ketua Divisi) --}}
                     @if(Auth::user()->isDivisionHead() || Auth::user()->isHrd() || Auth::user()->isAdmin())
                         <x-nav-link :href="route('approvals.index')" :active="request()->routeIs('approvals.*')">
                             {{ __('Persetujuan Cuti') }}
                         </x-nav-link>
                     @endif
 
-                    {{-- 4. MENU ADMIN (Hanya Super Admin) --}}
                     @can('access-admin-panel')
                         <x-nav-link :href="route('admin.users.index')" :active="request()->routeIs('admin.users.*')">
                             {{ __('Manajemen Pengguna') }}
@@ -47,7 +41,6 @@
                 <x-dropdown align="right" width="48">
                     <x-slot name="trigger">
                         <button class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 dark:text-gray-400 bg-white dark:bg-gray-800 hover:text-gray-700 dark:hover:text-gray-300 focus:outline-none transition ease-in-out duration-150">
-                            {{-- Tampilkan Nama dan Role kecil di sebelahnya --}}
                             <div class="text-left">
                                 <div>{{ Auth::user()->name }}</div>
                                 <div class="text-xs text-gray-400 dark:text-gray-500">{{ ucfirst(str_replace('_', ' ', Auth::user()->role)) }}</div>
