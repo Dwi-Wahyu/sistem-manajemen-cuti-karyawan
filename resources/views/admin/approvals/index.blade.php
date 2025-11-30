@@ -73,8 +73,6 @@
                             </select>
                         </div>
                         @else
-                        {{-- Spacer agar tombol tetap di kanan jika bukan HRD --}}
-                        <div class="hidden lg:block"></div>
                         @endif
 
 

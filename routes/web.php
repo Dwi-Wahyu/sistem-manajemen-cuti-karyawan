@@ -29,6 +29,9 @@ Route::middleware('auth')->group(function () {
     Route::resource('leave-requests', LeaveRequestController::class);
     Route::post('leave-requests/{leaveRequest}/cancel', [LeaveRequestController::class, 'cancel'])->name('leave-requests.cancel');
 
+    // --- Route Daftar Karyawan Divisi ---
+    Route::get('my-employees', [UserRolesTableController::class, 'index'])->name('division.employee.list');
+
     // --- Route Approval (Untuk Ketua Divisi & HRD) ---
     Route::get('/approvals', [LeaveApprovalController::class, 'index'])->name('approvals.index');
     Route::get('/approvals/{leaveRequest}', [LeaveApprovalController::class, 'show'])->name('approvals.show');
@@ -39,7 +42,6 @@ Route::middleware('auth')->group(function () {
 
 // --- Route Khusus Admin (Super Admin) ---
 Route::middleware(['auth', 'verified', 'can:access-admin-panel'])->prefix('admin')->name('admin.')->group(function () {
-
     Route::get('users/role/{role?}', [UserRolesTableController::class, 'index'])->name('users.index');
 
     // 1. Manajemen Pengguna (CRUD)

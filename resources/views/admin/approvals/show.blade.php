@@ -30,7 +30,7 @@
                                 {{ $leaveRequest->user->name }}
                             </h3>
                             <p class="mt-1 max-w-2xl text-sm text-gray-500 dark:text-gray-400">
-                                {{ ucfirst(str_replace('_', ' ', $leaveRequest->user->role)) }} &bull; {{ $leaveRequest->user->division->name ?? '-' }}
+                                {{ $leaveRequest->user->role->title() }} &bull; {{ $leaveRequest->user->division->name ?? '-' }}
                             </p>
                         </div>
                     </div>

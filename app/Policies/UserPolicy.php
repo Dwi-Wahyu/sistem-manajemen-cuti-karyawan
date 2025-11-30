@@ -12,10 +12,8 @@ class UserPolicy
      */
     public function before(User $user, string $ability): bool|null
     {
-        if ($user->isAdmin()) {
-            return true;
-        }
-        return null; 
+
+        return $user->isAdmin() || $user->isHrd() || $user->isDivisionHead();
     }
 
     /**
@@ -31,7 +29,7 @@ class UserPolicy
      */
     public function create(User $user): bool
     {
-        return false; 
+        return false;
     }
 
     /**
@@ -40,7 +38,7 @@ class UserPolicy
     public function update(User $user, User $model): bool
     {
         // Admin boleh edit semua. Pastikan Admin tidak sengaja mengedit dirinya sendiri (opsional)
-        return $user->id !== $model->id; 
+        return $user->id !== $model->id;
     }
 
     /**
@@ -52,7 +50,7 @@ class UserPolicy
         if ($user->id === $model->id) {
             return false;
         }
-        
+
         // 2. Hanya boleh menghapus Karyawan atau Ketua Divisi
         if ($model->isEmployee() || $model->isDivisionHead()) {
             return true;
