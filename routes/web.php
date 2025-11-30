@@ -31,6 +31,7 @@ Route::middleware('auth')->group(function () {
 
     // --- Route Approval (Untuk Ketua Divisi & HRD) ---
     Route::get('/approvals', [LeaveApprovalController::class, 'index'])->name('approvals.index');
+    Route::get('/approvals/{leaveRequest}', [LeaveApprovalController::class, 'show'])->name('approvals.show');
     Route::post('/approvals/{leaveRequest}/approve', [LeaveApprovalController::class, 'approve'])->name('approvals.approve');
     Route::post('/approvals/{leaveRequest}/reject', [LeaveApprovalController::class, 'reject'])->name('approvals.reject');
 });

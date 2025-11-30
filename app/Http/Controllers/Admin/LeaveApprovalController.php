@@ -3,8 +3,9 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Division;
 use App\Models\LeaveRequest;
-use App\Models\User;
+use App\Models\LeaveType;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -13,42 +14,64 @@ class LeaveApprovalController extends Controller
     /**
      * Menampilkan daftar pengajuan yang perlu disetujui oleh User saat ini.
      */
-    public function index()
+    public function index(Request $request)
     {
         /** @var \App\Models\User $user */
         $user = Auth::user();
-        
+
+        $leaveTypes = LeaveType::all();
+        $divisions = Division::all();
+
         $pendingRequests = LeaveRequest::query()
             ->with(['user', 'type'])
-            ->where('status', '!=', 'cancelled') // Abaikan yang dibatalkan
-            ->where('status', '!=', 'rejected')  // Abaikan yang sudah ditolak
-            ->where('status', '!=', 'approved')  // Abaikan yang sudah selesai
-            ->where(function($query) use ($user) {
-                
-                // KONDISI 1: User adalah KETUA DIVISI
+            ->when($request->search, function ($query, $search) {
+                $query->whereHas('user', function ($q) use ($search) {
+                    $q->where('name', 'like', "%{$search}%");
+                });
+            })
+            ->when($request->type_id, function ($query, $typeId) {
+                $query->where('leave_type_id', $typeId);
+            })
+            ->when($request->division_id, function ($query, $divId) {
+                $query->whereHas('user', function ($q) use ($divId) {
+                    $q->where('division_id', $divId);
+                });
+            })
+
+            ->where('status', '!=', 'cancelled')
+            ->where('status', '!=', 'rejected')
+            ->where('status', '!=', 'approved')
+            ->where(function ($query) use ($user) {
                 if ($user->isDivisionHead() && $user->ledDivision) {
-                    $query->orWhere(function($q) use ($user) {
-                        $q->whereHas('user', function($u) use ($user) {
+                    $query->orWhere(function ($q) use ($user) {
+                        $q->whereHas('user', function ($u) use ($user) {
                             $u->where('division_id', $user->ledDivision->id)
-                              ->where('id', '!=', $user->id);
-                        })
-                        ->where('status', 'pending');
+                                ->where('id', '!=', $user->id);
+                        })->where('status', 'pending');
                     });
                 }
 
-                // KONDISI 2: User adalah HRD (atau Admin)
                 if ($user->isHrd() || $user->isAdmin()) {
                     $query->orWhere('status', 'approved_by_leader')
-                          ->orWhere(function($q) {
-                              $q->where('status', 'pending')
+                        ->orWhere(function ($q) {
+                            $q->where('status', 'pending')
                                 ->whereHas('user', fn($u) => $u->where('role', 'division_head'));
-                          });
+                        });
                 }
             })
             ->orderBy('created_at', 'asc')
-            ->paginate(10);
+            ->cursorPaginate(10)
+            ->withQueryString(); // Agar parameter filter tetap ada saat pindah halaman (pagination)
 
-        return view('admin.approvals.index', compact('pendingRequests'));
+        // Kirim $leaveTypes dan $divisions ke view
+        return view('admin.approvals.index', compact('pendingRequests', 'leaveTypes', 'divisions'));
+    }
+
+    public function show($id)
+    {
+        $leaveRequest = \App\Models\LeaveRequest::with(['user.division', 'type'])->findOrFail($id);
+
+        return view('admin.approvals.show', compact('leaveRequest'));
     }
 
     /**
@@ -65,18 +88,18 @@ class LeaveApprovalController extends Controller
             if ($leaveRequest->status !== 'pending') {
                 return back()->withErrors('Status pengajuan tidak valid untuk disetujui Leader.');
             }
-            
+
             $leaveRequest->update([
                 'status' => 'approved_by_leader',
                 'leader_approver_id' => $user->id,
                 'leader_approved_at' => now(),
             ]);
         }
-        
+
         // 2. Logika untuk HRD (Final Approval)
         else if ($user->isHrd() || $user->isAdmin()) {
             $isFinalApproval = true;
-            
+
             $leaveRequest->update([
                 'status' => 'approved',
                 'hrd_approver_id' => $user->id,
@@ -92,8 +115,8 @@ class LeaveApprovalController extends Controller
             }
         }
 
-        $message = $isFinalApproval 
-            ? 'Pengajuan cuti telah disetujui secara final.' 
+        $message = $isFinalApproval
+            ? 'Pengajuan cuti telah disetujui secara final.'
             : 'Pengajuan cuti telah diverifikasi dan diteruskan ke HRD.';
 
         return back()->with('success', $message);
@@ -110,7 +133,7 @@ class LeaveApprovalController extends Controller
 
         /** @var \App\Models\User $user */
         $user = Auth::user();
-        
+
         $leaveRequest->update([
             'status' => 'rejected',
         ]);
