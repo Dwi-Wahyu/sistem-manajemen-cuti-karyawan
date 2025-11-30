@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\LeaveRequestStatus;
 use App\Http\Requests\StoreLeaveRequest;
 use App\Models\LeaveRequest;
 use App\Models\LeaveType;
 use App\Services\LeaveRequestService;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
 
 class LeaveRequestController extends Controller
 {
@@ -60,7 +62,7 @@ class LeaveRequestController extends Controller
      */
     public function show(LeaveRequest $leaveRequest)
     {
-        $this->authorize('view', $leaveRequest); // Gunakan Policy (User hanya bisa lihat punya sendiri)
+        $this->authorize('view', $leaveRequest);
         return view('leave_requests.show', compact('leaveRequest'));
     }
 
@@ -69,12 +71,13 @@ class LeaveRequestController extends Controller
      */
     public function cancel(LeaveRequest $leaveRequest)
     {
-        // Gunakan Gate 'cancel-leave-request' yang kita buat di Langkah 3
-        if (! \Illuminate\Support\Facades\Gate::allows('cancel-leave-request', $leaveRequest)) {
-            return back()->withErrors('Pembatalan gagal. Hanya pengajuan berstatus Pending milik Anda sendiri yang dapat dibatalkan.');
+        if (! Gate::allows('cancel-leave-request', $leaveRequest)) {
+            return back()->withErrors('Pembatalan gagal. Akses ditolak.');
         }
 
-        $leaveRequest->update(['status' => 'cancelled']);
+        $leaveRequest->status = LeaveRequestStatus::Cancelled;
+
+        $saved = $leaveRequest->save();
 
         return redirect()->route('leave-requests.index')->with('success', 'Pengajuan cuti berhasil dibatalkan.');
     }

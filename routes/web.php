@@ -56,7 +56,8 @@ Route::middleware(['auth', 'verified', 'can:access-admin-panel'])->prefix('admin
     // Manajemen Divisi (CRUD)
     Route::resource('divisions', DivisionController::class);
     Route::post('divisions/{division}/add-member', [DivisionController::class, 'addMember'])->name('divisions.addMember');
-    Route::post('divisions/remove-member/{user}', [DivisionController::class, 'removeMember'])->name('divisions.removeMember');
+    Route::post('/divisions/{division}/remove-member/{user}', [DivisionController::class, 'removeMember'])
+        ->name('divisions.removeMember');
 
     // Route Log Aktivitas
     Route::get('/activity-logs', [ActivityLogController::class, 'index'])

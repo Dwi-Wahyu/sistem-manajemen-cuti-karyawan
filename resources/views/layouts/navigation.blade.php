@@ -17,11 +17,9 @@
 
     <div :class="sidebarOpen ? 'translate-x-0 ease-out' : '-translate-x-full ease-in'" class="fixed inset-y-0 left-0 z-30 w-64 transition duration-300 transform bg-white dark:bg-gray-800 border-r border-gray-100 dark:border-gray-700 md:translate-x-0 md:relative md:inset-0 md:flex md:flex-col md:h-full">
         <div class="flex-1 overflow-y-auto">
-            <div class="flex items-center justify-center h-16 bg-white dark:bg-gray-800 border-b border-gray-100 dark:border-gray-700 md:flex">
-                <div class="flex items-center gap-2 font-bold text-xl text-gray-800 dark:text-white">
-                    <img src="/cuti-plus.png" class="w-6 h-6" alt="">
-                    <span>Cuti Plus</span>
-                </div>
+            <div class="flex gap-2 font-bold text-xl text-gray-800 dark:text-white items-center px-7 h-16 bg-white dark:bg-gray-800 border-b border-gray-100 dark:border-gray-700 md:flex">
+                <img src="/cuti-plus.png" class="w-5 h-5" alt="">
+                <span>Cuti Plus</span>
             </div>
 
             <nav class="mt-5 px-4 space-y-2">

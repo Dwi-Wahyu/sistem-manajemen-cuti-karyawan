@@ -19,7 +19,7 @@ class DivisionController extends Controller
 
         // Ambil data divisi beserta info Ketua dan jumlah anggota
         $divisions = Division::with('head')->withCount('members')->paginate(10);
-        
+
         return view('admin.divisions.index', compact('divisions'));
     }
 
@@ -50,7 +50,7 @@ class DivisionController extends Controller
             'name' => 'required|string|max:255|unique:divisions,name',
             'description' => 'nullable|string',
             'head_user_id' => [
-                'nullable', 
+                'nullable',
                 'exists:users,id',
                 // Validasi manual: Pastikan user yang dipilih role-nya division_head
                 function ($attribute, $value, $fail) {
@@ -107,9 +107,9 @@ class DivisionController extends Controller
 
         // Cari calon ketua: Semua division_head yang (belum punya tim OR adalah ketua divisi ini sekarang)
         $availableHeads = User::where('role', 'division_head')
-            ->where(function($query) use ($division) {
+            ->where(function ($query) use ($division) {
                 $query->whereDoesntHave('ledDivision')
-                      ->orWhere('id', $division->head_user_id);
+                    ->orWhere('id', $division->head_user_id);
             })
             ->get();
 
@@ -183,7 +183,7 @@ class DivisionController extends Controller
         ]);
 
         $user = User::find($request->user_id);
-        
+
         // Validasi: Pastikan user belum punya divisi (opsional, tapi disarankan)
         if ($user->division_id) {
             return back()->withErrors(['user_id' => 'User tersebut sudah tergabung di divisi lain.']);
@@ -202,18 +202,18 @@ class DivisionController extends Controller
     {
         $this->authorize('update', $division);
 
-        // Pastikan user memang anggota divisi ini
-        if ($user->division_id !== $division->id) {
-            return back()->withErrors(['msg' => 'User bukan anggota divisi ini.']);
+        // Validasi Keanggotaan
+        if ($user->division_id != $division->id) {
+            return back()->withErrors(['error' => 'User bukan anggota divisi ini.']);
         }
 
-        // Jangan izinkan menghapus Ketua Divisi lewat tombol hapus anggota biasa
-        if ($division->head_user_id === $user->id) {
-            return back()->withErrors(['msg' => 'Tidak dapat mengeluarkan Ketua Divisi. Silakan ganti ketua divisi terlebih dahulu melalui menu Edit.']);
+        // Validasi Tambahan (Opsional): Jangan hapus Ketua Divisi lewat tombol ini
+        if ($division->head_user_id == $user->id) {
+            return back()->withErrors(['error' => 'Tidak dapat mengeluarkan Ketua Divisi. Silakan ganti ketua terlebih dahulu.']);
         }
 
-        $user->division_id = null;
-        $user->save();
+        // Set division_id menjadi NULL
+        $user->update(['division_id' => null]);
 
         return back()->with('success', 'Anggota berhasil dikeluarkan dari divisi.');
     }
