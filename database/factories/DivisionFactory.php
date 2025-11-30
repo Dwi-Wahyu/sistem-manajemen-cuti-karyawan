@@ -24,9 +24,6 @@ class DivisionFactory extends Factory
             // Deskripsi singkat
             'description' => $this->faker->sentence(),
 
-            // Membuat User baru secara otomatis untuk dijadikan Ketua Divisi
-            'head_user_id' => User::factory(),
-
             // Tanggal acak di masa lalu
             'established_date' => $this->faker->date(),
         ];

@@ -6,11 +6,7 @@ use App\Http\Requests\StoreLeaveRequest;
 use App\Models\LeaveRequest;
 use App\Models\LeaveType;
 use App\Services\LeaveRequestService;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Storage;
-use Carbon\Carbon;
-use Carbon\CarbonPeriod;
 
 class LeaveRequestController extends Controller
 {

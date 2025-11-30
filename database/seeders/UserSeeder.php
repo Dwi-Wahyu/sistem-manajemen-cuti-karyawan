@@ -4,7 +4,6 @@ namespace Database\Seeders;
 
 use App\Models\Division;
 use App\Models\User;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
 class UserSeeder extends Seeder
@@ -24,27 +23,22 @@ class UserSeeder extends Seeder
             'password' => 'password',
         ]);
 
-        // Buat DIVISI dan DIVISION HEAD
-        // Kita buat 20 Divisi
-        $divisions = Division::factory(20)->create()->each(function ($division) {
-            // DivisionFactory membuat user di kolom head_user_id.
-            $head = User::find($division->head_user_id);
+        // Buat 10 division_head
+        User::factory(10)->divisionHead()->create([
+            'password' => 'password',
+        ]);
+
+        // Buat 10 Divisi
+        Division::factory(10)->create()->each(function ($division) {
+            $head = User::where('role', 'division_head')
+                ->whereNull('division_id') // Cari yang division_id-nya NULL
+                ->first();
             if ($head) {
                 $head->update([
                     'role' => 'division_head',
-                    'division_id' => $division->id,
+                    'division_id' => null,
                 ]);
             }
-        });
-
-        // Buat 1000 EMPLOYEE
-        // menyebar 1000 employee ke dalam 20 divisi.
-        User::factory(1000)->create(function () use ($divisions) {
-            return [
-                'role' => 'employee',
-                // Pilih satu divisi secara acak dari 20 divisi yang ada
-                'division_id' => $divisions->random()->id,
-            ];
         });
     }
 }
