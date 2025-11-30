@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\LeaveRequestStatus;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -17,6 +18,7 @@ class LeaveRequest extends Model
         'leader_approved_at' => 'datetime',
         'hrd_approved_at' => 'datetime',
         'total_days' => 'float',
+        'status' => LeaveRequestStatus::class,
     ];
 
     // Karyawan yang mengajukan

@@ -1,8 +1,8 @@
 <x-app-layout>
     <x-slot name="header">
         <div class="flex items-center gap-4">
-            <a href="{{ route('approvals.index') }}" class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <a href="{{ route('approvals.index') }}" class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition-colors">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
                 </svg>
             </a>
@@ -20,27 +20,26 @@
             <div class="bg-white dark:bg-gray-800 shadow overflow-hidden sm:rounded-lg border border-gray-200 dark:border-gray-700">
 
                 {{-- Header Detail --}}
-                <div class="px-4 py-5 sm:px-6 flex justify-between items-start border-b border-gray-200 dark:border-gray-700">
+                <div class="px-4 py-5 sm:px-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-gray-200 dark:border-gray-700">
                     <div class="flex items-center gap-4">
-                        <div class="h-12 w-12 rounded-full bg-indigo-100 dark:bg-indigo-900 flex items-center justify-center text-indigo-700 dark:text-indigo-300 font-bold text-xl">
+                        <div class="h-12 w-12 rounded-full bg-indigo-100 dark:bg-indigo-900 flex items-center justify-center text-indigo-700 dark:text-indigo-300 font-bold text-xl shrink-0">
                             {{ substr($leaveRequest->user->name, 0, 1) }}
                         </div>
                         <div>
                             <h3 class="text-lg leading-6 font-medium text-gray-900 dark:text-gray-100">
                                 {{ $leaveRequest->user->name }}
                             </h3>
-                            <p class="mt-1 max-w-2xl text-sm text-gray-500 dark:text-gray-400">
+                            <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
                                 {{ $leaveRequest->user->role->title() }} &bull; {{ $leaveRequest->user->division->name ?? '-' }}
                             </p>
                         </div>
                     </div>
 
-                    {{-- Badge Status (Opsional jika ingin ditampilkan) --}}
-                    @if($leaveRequest->status == 'approved_by_leader')
-                    <span class="inline-flex items-center px-3 py-0.5 rounded-full text-sm font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200">
-                        Diverifikasi Leader
+                    {{-- Badge Status Dinamis Menggunakan Enum --}}
+                    {{-- Mengambil warna dari badgeClasses() dan teks dari label() --}}
+                    <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium border {{ $leaveRequest->status->badgeClasses() }}">
+                        {{ $leaveRequest->status->label() }}
                     </span>
-                    @endif
                 </div>
 
                 {{-- Body Detail --}}
@@ -83,7 +82,7 @@
                         <div class="md:col-span-2">
                             <dt class="text-sm font-medium text-gray-500 dark:text-gray-400 mb-2">Lampiran</dt>
                             <dd class="mt-1 text-sm text-gray-900 dark:text-white sm:mt-0 sm:col-span-2">
-                                <a href="{{ Storage::url($leaveRequest->medical_certificate_path) }}" target="_blank" class="inline-flex items-center gap-2 px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md text-sm font-medium text-gray-700 dark:text-gray-200 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+                                <a href="{{ Storage::url($leaveRequest->medical_certificate_path) }}" target="_blank" class="inline-flex items-center gap-2 px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md text-sm font-medium text-gray-700 dark:text-gray-200 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 transition">
                                     <svg class="w-5 h-5 text-gray-500 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"></path>
                                     </svg>
@@ -93,14 +92,32 @@
                         </div>
                         @endif
 
+                        {{-- Tampilkan Alasan Penolakan Jika Ditolak --}}
+                        @if($leaveRequest->status === \App\Enums\LeaveRequestStatus::Rejected)
+                        <div class="md:col-span-2 mt-4">
+                            <dt class="text-sm font-medium text-red-500 dark:text-red-400 mb-2">Alasan Penolakan</dt>
+                            <dd class="mt-1 text-sm text-gray-900 dark:text-white bg-red-50 dark:bg-red-900/20 p-4 rounded-lg border border-red-100 dark:border-red-800">
+                                <p class="font-medium text-red-800 dark:text-red-300 mb-1">
+                                    Oleh:
+                                    @if($leaveRequest->hrd_rejection_note) HRD @else Leader @endif
+                                </p>
+                                <p class="italic text-gray-700 dark:text-gray-300">
+                                    "{{ $leaveRequest->hrd_rejection_note ?? $leaveRequest->leader_rejection_note }}"
+                                </p>
+                            </dd>
+                        </div>
+                        @endif
+
                     </dl>
                 </div>
 
                 {{-- Footer: Tombol Aksi --}}
+                {{-- Hanya tampilkan tombol jika status BUKAN Rejected/Approved/Cancelled --}}
+                @if(!in_array($leaveRequest->status, [\App\Enums\LeaveRequestStatus::Approved, \App\Enums\LeaveRequestStatus::Rejected, \App\Enums\LeaveRequestStatus::Cancelled]))
                 <div class="px-4 py-4 sm:px-6 bg-gray-50 dark:bg-gray-900/50 border-t border-gray-200 dark:border-gray-700 flex flex-col sm:flex-row gap-3 sm:justify-end">
 
                     {{-- Tombol Tolak (Buka Modal) --}}
-                    <button type="button" @click="rejectOpen = true" class="inline-flex justify-center items-center px-4 py-2 border border-gray-300 dark:border-gray-600 shadow-sm text-sm font-medium rounded-md text-gray-700 dark:text-gray-200 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                    <button type="button" @click="rejectOpen = true" class="inline-flex justify-center items-center px-4 py-2 border border-gray-300 dark:border-gray-600 shadow-sm text-sm font-medium rounded-md text-gray-700 dark:text-gray-200 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition">
                         <svg class="w-4 h-4 mr-2 text-red-500" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
                         </svg>
@@ -108,7 +125,7 @@
                     </button>
 
                     {{-- Tombol Setujui (Buka Modal) --}}
-                    <button type="button" @click="approveOpen = true" class="inline-flex justify-center items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
+                    <button type="button" @click="approveOpen = true" class="inline-flex justify-center items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition">
                         <svg class="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
                         </svg>
@@ -116,6 +133,7 @@
                     </button>
 
                 </div>
+                @endif
             </div>
         </div>
 
@@ -140,14 +158,14 @@
                             @endif
                         </p>
                     </div>
-                    <div class="mt-5 sm:mt-6 sm:grid sm:grid-flow-row-dense sm:grid-cols-2 sm:gap-3">
-                        <form action="{{ route('approvals.approve', $leaveRequest->id) }}" method="POST">
+                    <div class="mt-5 sm:mt-6 flex gap-4 w-full">
+                        <form class="w-full" action="{{ route('approvals.approve', $leaveRequest->id) }}" method="POST">
                             @csrf
-                            <button type="submit" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-green-600 text-base font-medium text-white hover:bg-green-700 focus:outline-none sm:col-start-2 sm:text-sm">
+                            <button type="submit" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-green-600 text-base font-medium text-white hover:bg-green-700 focus:outline-none sm:col-start-2 sm:text-sm transition">
                                 Ya, Setujui
                             </button>
                         </form>
-                        <button type="button" @click="approveOpen = false" class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 dark:border-gray-600 shadow-sm px-4 py-2 bg-white dark:bg-gray-700 text-base font-medium text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-600 focus:outline-none sm:mt-0 sm:col-start-1 sm:text-sm">
+                        <button type="button" @click="approveOpen = false" class="w-full inline-flex justify-center rounded-md border border-gray-300 dark:border-gray-600 shadow-sm px-4 py-2 bg-white dark:bg-gray-700 text-base font-medium text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-600 focus:outline-none sm:mt-0 sm:col-start-1 sm:text-sm transition">
                             Batal
                         </button>
                     </div>
@@ -183,8 +201,8 @@
                             </div>
                         </div>
                         <div class="bg-gray-50 dark:bg-gray-700/30 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6 gap-2">
-                            <button type="submit" class="inline-flex w-full justify-center rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 sm:ml-3 sm:w-auto">Konfirmasi Tolak</button>
-                            <button type="button" @click="rejectOpen = false" class="mt-3 inline-flex w-full justify-center rounded-md bg-white dark:bg-gray-700 px-3 py-2 text-sm font-semibold text-gray-900 dark:text-gray-200 shadow-sm ring-1 ring-inset ring-gray-300 dark:ring-gray-600 hover:bg-gray-50 dark:hover:bg-gray-600 sm:mt-0 sm:w-auto">Batal</button>
+                            <button type="submit" class="inline-flex w-full justify-center rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 sm:ml-3 sm:w-auto transition">Konfirmasi Tolak</button>
+                            <button type="button" @click="rejectOpen = false" class="mt-3 inline-flex w-full justify-center rounded-md bg-white dark:bg-gray-700 px-3 py-2 text-sm font-semibold text-gray-900 dark:text-gray-200 shadow-sm ring-1 ring-inset ring-gray-300 dark:ring-gray-600 hover:bg-gray-50 dark:hover:bg-gray-600 sm:mt-0 sm:w-auto transition">Batal</button>
                         </div>
                     </form>
                 </div>

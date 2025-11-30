@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Enums\LeaveRequestStatus;
 use App\Http\Controllers\Controller;
 use App\Models\Division;
 use App\Models\LeaveRequest;
@@ -38,9 +39,10 @@ class LeaveApprovalController extends Controller
                 });
             })
 
-            ->where('status', '!=', 'cancelled')
-            ->where('status', '!=', 'rejected')
-            ->where('status', '!=', 'approved')
+            ->where('status', '!=', LeaveRequestStatus::Cancelled)
+            ->where('status', '!=', LeaveRequestStatus::Rejected)
+            ->where('status', '!=', LeaveRequestStatus::Approved)
+
             ->where(function ($query) use ($user) {
                 if ($user->isDivisionHead() && $user->ledDivision) {
                     $query->orWhere(function ($q) use ($user) {
@@ -59,7 +61,9 @@ class LeaveApprovalController extends Controller
                         });
                 }
             })
+
             ->orderBy('created_at', 'asc')
+            ->orderBy('id', 'asc')
             ->cursorPaginate(10)
             ->withQueryString(); // Agar parameter filter tetap ada saat pindah halaman (pagination)
 
@@ -83,30 +87,31 @@ class LeaveApprovalController extends Controller
         $user = Auth::user();
         $isFinalApproval = false;
 
-        // 1. Logika untuk Ketua Divisi
+        // Logika untuk Ketua Divisi
         if ($user->isDivisionHead() && !$user->isHrd() && !$user->isAdmin()) {
-            if ($leaveRequest->status !== 'pending') {
+            // Cek status
+            if ($leaveRequest->status !== LeaveRequestStatus::Pending) {
                 return back()->withErrors('Status pengajuan tidak valid untuk disetujui Leader.');
             }
 
             $leaveRequest->update([
-                'status' => 'approved_by_leader',
+                'status' => LeaveRequestStatus::ApprovedByLeader,
                 'leader_approver_id' => $user->id,
                 'leader_approved_at' => now(),
             ]);
         }
 
-        // 2. Logika untuk HRD (Final Approval)
+        // Logika untuk HRD (Final Approval)
         else if ($user->isHrd() || $user->isAdmin()) {
             $isFinalApproval = true;
 
             $leaveRequest->update([
-                'status' => 'approved',
+                'status' => LeaveRequestStatus::Approved,
                 'hrd_approver_id' => $user->id,
                 'hrd_approved_at' => now(),
             ]);
 
-            // PENTING: Kurangi Kuota Cuti Tahunan User
+            // Potong Kuota Cuti
             if ($leaveRequest->type->is_quota_deductible) {
                 $applicant = $leaveRequest->user;
                 if ($applicant->current_annual_leave_quota >= $leaveRequest->total_days) {
@@ -134,10 +139,12 @@ class LeaveApprovalController extends Controller
         /** @var \App\Models\User $user */
         $user = Auth::user();
 
+        // Update status ke Rejected
         $leaveRequest->update([
-            'status' => 'rejected',
+            'status' => LeaveRequestStatus::Rejected,
         ]);
 
+        // Simpan catatan penolakan sesuai siapa yang menolak
         if ($user->isHrd() || $user->isAdmin()) {
             $leaveRequest->update([
                 'hrd_approver_id' => $user->id,
