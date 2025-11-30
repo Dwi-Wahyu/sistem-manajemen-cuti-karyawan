@@ -19,19 +19,19 @@
                     </x-nav-link>
 
                     @if(Auth::user()->isDivisionHead() || Auth::user()->isHrd() || Auth::user()->isAdmin())
-                        <x-nav-link :href="route('approvals.index')" :active="request()->routeIs('approvals.*')">
-                            {{ __('Persetujuan Cuti') }}
-                        </x-nav-link>
+                    <x-nav-link :href="route('approvals.index')" :active="request()->routeIs('approvals.*')">
+                        {{ __('Persetujuan Cuti') }}
+                    </x-nav-link>
                     @endif
 
                     @can('access-admin-panel')
-                        <x-nav-link :href="route('admin.users.index')" :active="request()->routeIs('admin.users.*')">
-                            {{ __('Manajemen Pengguna') }}
-                        </x-nav-link>
+                    <x-nav-link :href="route('admin.users.index')" :active="request()->routeIs('admin.users.*')">
+                        {{ __('Manajemen Pengguna') }}
+                    </x-nav-link>
 
-                        <x-nav-link :href="route('admin.divisions.index')" :active="request()->routeIs('admin.divisions.*')">
-                            {{ __('Manajemen Divisi') }}
-                        </x-nav-link>
+                    <x-nav-link :href="route('admin.divisions.index')" :active="request()->routeIs('admin.divisions.*')">
+                        {{ __('Manajemen Divisi') }}
+                    </x-nav-link>
                     @endcan
                 </div>
             </div>
@@ -64,7 +64,7 @@
                             @csrf
 
                             <x-dropdown-link :href="route('logout')"
-                                    onclick="event.preventDefault();
+                                onclick="event.preventDefault();
                                                 this.closest('form').submit();">
                                 {{ __('Log Out') }}
                             </x-dropdown-link>
@@ -91,26 +91,26 @@
             <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                 {{ __('Dashboard') }}
             </x-responsive-nav-link>
-            
+
             <x-responsive-nav-link :href="route('leave-requests.index')" :active="request()->routeIs('leave-requests.*')">
                 {{ __('Cuti Saya') }}
             </x-responsive-nav-link>
 
             @if(Auth::user()->isDivisionHead() || Auth::user()->isHrd() || Auth::user()->isAdmin())
-                <x-responsive-nav-link :href="route('approvals.index')" :active="request()->routeIs('approvals.*')">
-                    {{ __('Persetujuan Cuti') }}
-                </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('approvals.index')" :active="request()->routeIs('approvals.*')">
+                {{ __('Persetujuan Cuti') }}
+            </x-responsive-nav-link>
             @endif
 
             @can('access-admin-panel')
-                <div class="border-t border-gray-200 dark:border-gray-600 my-2"></div>
-                <div class="px-4 text-xs text-gray-400 dark:text-gray-500 uppercase font-bold">Admin Menu</div>
-                <x-responsive-nav-link :href="route('admin.users.index')" :active="request()->routeIs('admin.users.*')">
-                    {{ __('Manajemen Pengguna') }}
-                </x-responsive-nav-link>
-                <x-responsive-nav-link :href="route('admin.divisions.index')" :active="request()->routeIs('admin.divisions.*')">
-                    {{ __('Manajemen Divisi') }}
-                </x-responsive-nav-link>
+            <div class="border-t border-gray-200 dark:border-gray-600 my-2"></div>
+            <div class="px-4 text-xs text-gray-400 dark:text-gray-500 uppercase font-bold">Admin Menu</div>
+            <x-responsive-nav-link :href="route('admin.users.index')" :active="request()->routeIs('admin.users.*')">
+                {{ __('Manajemen Pengguna') }}
+            </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('admin.divisions.index')" :active="request()->routeIs('admin.divisions.*')">
+                {{ __('Manajemen Divisi') }}
+            </x-responsive-nav-link>
             @endcan
         </div>
 
@@ -131,7 +131,7 @@
                     @csrf
 
                     <x-responsive-nav-link :href="route('logout')"
-                            onclick="event.preventDefault();
+                        onclick="event.preventDefault();
                                         this.closest('form').submit();">
                         {{ __('Log Out') }}
                     </x-responsive-nav-link>
