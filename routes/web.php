@@ -6,8 +6,9 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\DivisionController;
 use App\Http\Controllers\Admin\LeaveApprovalController;
+use App\Http\Controllers\Admin\UserRolesTableController;
 use App\Http\Controllers\LeaveRequestController;
-use App\Http\Controllers\DashboardController; 
+use App\Http\Controllers\DashboardController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -27,7 +28,7 @@ Route::middleware('auth')->group(function () {
     // --- Route Pengajuan Cuti (Employee Features) ---
     Route::resource('leave-requests', LeaveRequestController::class);
     Route::post('leave-requests/{leaveRequest}/cancel', [LeaveRequestController::class, 'cancel'])->name('leave-requests.cancel');
-    
+
     // --- Route Approval (Untuk Ketua Divisi & HRD) ---
     Route::get('/approvals', [LeaveApprovalController::class, 'index'])->name('approvals.index');
     Route::post('/approvals/{leaveRequest}/approve', [LeaveApprovalController::class, 'approve'])->name('approvals.approve');
@@ -37,9 +38,11 @@ Route::middleware('auth')->group(function () {
 
 // --- Route Khusus Admin (Super Admin) ---
 Route::middleware(['auth', 'verified', 'can:access-admin-panel'])->prefix('admin')->name('admin.')->group(function () {
-    
+
+    Route::get('users/role/{role?}', [UserRolesTableController::class, 'index'])->name('users.index');
+
     // 1. Manajemen Pengguna (CRUD)
-    Route::resource('users', UserController::class); 
+    Route::resource('users', UserController::class)->except('index');
 
     // 2. Manajemen Divisi (CRUD)
     Route::resource('divisions', DivisionController::class);
@@ -48,4 +51,4 @@ Route::middleware(['auth', 'verified', 'can:access-admin-panel'])->prefix('admin
 });
 
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';

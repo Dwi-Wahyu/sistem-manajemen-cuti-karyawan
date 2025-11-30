@@ -43,7 +43,7 @@
                     {{ __('Cuti Saya') }}
                 </a>
 
-                @if(Auth::user()->isDivisionHead() || Auth::user()->isHrd() || Auth::user()->isAdmin())
+                @if(Auth::user()->isDivisionHead() || Auth::user()->isHrd())
                 <a href="{{ route('approvals.index') }}" class="flex items-center px-4 py-2 text-sm font-medium rounded-lg transition-colors duration-150 hover:bg-gray-100 dark:hover:bg-gray-700 {{ request()->routeIs('approvals.*') ? 'bg-indigo-50 text-indigo-600 dark:bg-gray-900 dark:text-indigo-400' : 'text-gray-600 dark:text-gray-400' }}">
                     <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -57,12 +57,14 @@
                     <p class="px-4 text-xs font-semibold text-gray-400 uppercase tracking-wider">Admin Panel</p>
                 </div>
 
-                <a href="{{ route('admin.users.index') }}" class="flex items-center px-4 py-2 text-sm font-medium rounded-lg transition-colors duration-150 hover:bg-gray-100 dark:hover:bg-gray-700 {{ request()->routeIs('admin.users.*') ? 'bg-indigo-50 text-indigo-600 dark:bg-gray-900 dark:text-indigo-400' : 'text-gray-600 dark:text-gray-400' }}">
+                <a href="{{ route('approvals.index') }}" class="flex items-center px-4 py-2 text-sm font-medium rounded-lg transition-colors duration-150 hover:bg-gray-100 dark:hover:bg-gray-700 {{ request()->routeIs('approvals.*') ? 'bg-indigo-50 text-indigo-600 dark:bg-gray-900 dark:text-indigo-400' : 'text-gray-600 dark:text-gray-400' }}">
                     <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
-                    {{ __('Manajemen Pengguna') }}
+                    {{ __('Persetujuan Cuti') }}
                 </a>
+
+
 
                 <a href="{{ route('admin.divisions.index') }}" class="flex items-center px-4 py-2 text-sm font-medium rounded-lg transition-colors duration-150 hover:bg-gray-100 dark:hover:bg-gray-700 {{ request()->routeIs('admin.divisions.*') ? 'bg-indigo-50 text-indigo-600 dark:bg-gray-900 dark:text-indigo-400' : 'text-gray-600 dark:text-gray-400' }}">
                     <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -70,12 +72,50 @@
                     </svg>
                     {{ __('Manajemen Divisi') }}
                 </a>
+
+                <div class="pt-4 pb-1">
+                    <p class="px-4 text-xs font-semibold text-gray-400 uppercase tracking-wider">Manajemen Pengguna</p>
+                </div>
+
+                <!-- Kepala Divisi -->
+                <a href="{{ route('admin.users.index', ['role' => 'division_head']) }}"
+                    class="flex items-center px-4 py-2 text-sm font-medium rounded-lg transition-colors duration-150 hover:bg-gray-100 dark:hover:bg-gray-700 
+                    {{ request()->routeIs('admin.users.index') && request('role') === 'division_head' ? 'bg-indigo-50 text-indigo-600 dark:bg-gray-900 dark:text-indigo-400' : 'text-gray-600 dark:text-gray-400' }}">
+
+                    <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                    </svg>
+                    {{ __('Kepala Divisi') }}
+                </a>
+
+                <!-- Kepala Divisi -->
+                <a href="{{ route('admin.users.index', ['role' => 'hrd']) }}"
+                    class="flex items-center px-4 py-2 text-sm font-medium rounded-lg transition-colors duration-150 hover:bg-gray-100 dark:hover:bg-gray-700 
+                    {{ request()->routeIs('admin.users.index') && request('role') === 'hrd' ? 'bg-indigo-50 text-indigo-600 dark:bg-gray-900 dark:text-indigo-400' : 'text-gray-600 dark:text-gray-400' }}">
+
+                    <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                    </svg>
+                    {{ __('HRD') }}
+                </a>
+
+                <!-- Karyawan -->
+                <a href="{{ route('admin.users.index', ['role' => 'employee']) }}"
+                    class="flex items-center px-4 py-2 text-sm font-medium rounded-lg transition-colors duration-150 hover:bg-gray-100 dark:hover:bg-gray-700 
+                    {{ request()->routeIs('admin.users.index') && request('role') === 'employee' ? 'bg-indigo-50 text-indigo-600 dark:bg-gray-900 dark:text-indigo-400' : 'text-gray-600 dark:text-gray-400' }}">
+
+                    <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                    </svg>
+                    {{ __('Karyawan') }}
+                </a>
                 @endcan
+
 
             </nav>
         </div>
 
-        <div class="shrink-0 p-4 border-t border-gray-100 dark:border-gray-700 bg-gray-50 dark:bg-gray-900">
+        <!-- <div class="shrink-0 p-4 border-t border-gray-100 dark:border-gray-700 bg-gray-50 dark:bg-gray-900">
             <div class="flex items-center gap-3">
                 <div class="flex-1 min-w-0">
                     <p class="text-sm font-medium text-gray-900 dark:text-white truncate">
@@ -97,7 +137,7 @@
             <div class="mt-2 text-center">
                 <a href="{{ route('profile.edit') }}" class="text-xs text-indigo-600 hover:text-indigo-800 dark:text-indigo-400">Edit Profile</a>
             </div>
-        </div>
+        </div> -->
     </div>
 
     <div x-show="sidebarOpen" @click="sidebarOpen = false" class="fixed inset-0 z-20 bg-black opacity-50 md:hidden"></div>

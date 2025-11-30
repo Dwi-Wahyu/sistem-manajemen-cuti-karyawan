@@ -1,20 +1,20 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-            {{ __('Edit Pengguna: ') . $user->name }}
+            {{ __('Edit Data ') . $user->name }}
         </h2>
     </x-slot>
 
     <div class="py-12">
         <div class="max-w-4xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg p-6 border border-gray-200 dark:border-gray-700">
-                
+
                 <form method="POST" action="{{ route('admin.users.update', $user) }}">
                     @csrf
                     @method('PUT')
-                    
+
                     <div class="space-y-6">
-                        
+
                         {{-- Nama Lengkap --}}
                         <div>
                             <x-input-label for="name" :value="__('Nama Lengkap')" class="dark:text-gray-300" />
@@ -42,9 +42,9 @@
                                 <x-input-label for="role" :value="__('Role / Peran')" class="dark:text-gray-300" />
                                 <select id="role" name="role" class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-900 dark:text-gray-300 shadow-sm focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 sm:text-sm" required>
                                     @foreach ($roles as $r)
-                                        <option value="{{ $r }}" {{ old('role', $user->role) == $r ? 'selected' : '' }}>
-                                            {{ ucfirst(str_replace('_', ' ', $r)) }}
-                                        </option>
+                                    <option value="{{ $r }}" {{ old('role', $user->role) == $r ? 'selected' : '' }}>
+                                        {{ ucfirst(str_replace('_', ' ', $r)) }}
+                                    </option>
                                     @endforeach
                                 </select>
                                 <x-input-error class="mt-2" :messages="$errors->get('role')" />
@@ -71,7 +71,7 @@
                         {{-- Section Manajemen Kuota Cuti --}}
                         <div class="bg-gray-50 dark:bg-gray-700/50 p-4 rounded-md border border-gray-200 dark:border-gray-600 mt-6">
                             <h3 class="font-semibold text-gray-700 dark:text-gray-300 mb-4">{{ __('Manajemen Kuota Cuti') }}</h3>
-                            
+
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 {{-- Kuota Cuti Awal --}}
                                 <div>
@@ -104,11 +104,11 @@
                         </div>
 
                         {{-- Footer Action --}}
-                        <div class="flex items-center gap-4 pt-4 border-t border-gray-200 dark:border-gray-700">
-                            <x-primary-button>{{ __('Perbarui Data') }}</x-primary-button>
+                        <div class="flex justify-end items-center gap-4 pt-4 border-t border-gray-200 dark:border-gray-700">
                             <a href="{{ route('admin.users.index') }}" class="inline-flex items-center px-4 py-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md font-semibold text-xs text-gray-700 dark:text-gray-300 uppercase tracking-widest shadow-sm hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-25 transition ease-in-out duration-150">
                                 {{ __('Batal') }}
                             </a>
+                            <x-primary-button>{{ __('Perbarui Data') }}</x-primary-button>
                         </div>
                     </div>
                 </form>
