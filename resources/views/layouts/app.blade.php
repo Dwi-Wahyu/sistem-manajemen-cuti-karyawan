@@ -8,38 +8,36 @@
 
     <title>{{ config('app.name', 'Laravel') }}</title>
 
-    <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
 
-    <!-- Scripts -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 
 <body class="font-sans antialiased">
-    <div class="min-h-screen bg-gray-100 dark:bg-gray-900">
+    <div class="min-h-screen bg-gray-100 dark:bg-gray-900 md:flex">
+
         @include('layouts.navigation')
 
-        <!-- Page Heading -->
-        @isset($header)
-        <header class="bg-white dark:bg-gray-800 shadow">
-            <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-                {{-- Wrapper tambahan untuk memastikan teks header menjadi terang saat mode gelap --}}
-                <div class="text-gray-800 dark:text-gray-200">
-                    {{ $header }}
+        <div class="flex-1 w-full min-w-0 flex flex-col">
+
+            @isset($header)
+            <header class="bg-white dark:bg-gray-800 shadow">
+                <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+                    {{-- Wrapper tambahan untuk memastikan teks header menjadi terang saat mode gelap --}}
+                    <div class="text-gray-800 dark:text-gray-200">
+                        {{ $header }}
+                    </div>
                 </div>
-            </div>
-        </header>
-        @endisset
+            </header>
+            @endisset
 
-        <!-- <div class="flex justify-center items-center h-40">
-            <div class="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-blue-500"></div>
-        </div> -->
+            <main class="flex-1">
+                {{ $slot }}
+            </main>
 
-        <!-- Page Content -->
-        <main>
-            {{ $slot }}
-        </main>
+        </div>
+
     </div>
 </body>
 
