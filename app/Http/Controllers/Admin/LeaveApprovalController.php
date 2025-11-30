@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Enums\LeaveRequestStatus;
 use App\Http\Controllers\Controller;
+use App\Models\ActivityLog;
 use App\Models\Division;
 use App\Models\LeaveRequest;
 use App\Models\LeaveType;
@@ -156,6 +157,15 @@ class LeaveApprovalController extends Controller
                 'leader_rejection_note' => $request->rejection_note
             ]);
         }
+
+        ActivityLog::create([
+            'user_id'      => Auth::id(),
+            'action'       => 'rejected',
+            'description'  => 'Menolak pengajuan cuti dengan alasan: ' . $request->rejection_note,
+            'subject_type' => get_class($leaveRequest),
+            'subject_id'   => $leaveRequest->id,
+            'ip_address'   => request()->ip(),
+        ]);
 
         return back()->with('success', 'Pengajuan cuti telah ditolak.');
     }

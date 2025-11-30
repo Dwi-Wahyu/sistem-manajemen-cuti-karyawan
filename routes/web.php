@@ -7,6 +7,7 @@ use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\DivisionController;
 use App\Http\Controllers\Admin\LeaveApprovalController;
 use App\Http\Controllers\Admin\UserRolesTableController;
+use App\Http\Controllers\Admin\ActivityLogController;
 use App\Http\Controllers\LeaveRequestController;
 use App\Http\Controllers\DashboardController;
 
@@ -37,6 +38,11 @@ Route::middleware('auth')->group(function () {
     Route::get('/approvals/{leaveRequest}', [LeaveApprovalController::class, 'show'])->name('approvals.show');
     Route::post('/approvals/{leaveRequest}/approve', [LeaveApprovalController::class, 'approve'])->name('approvals.approve');
     Route::post('/approvals/{leaveRequest}/reject', [LeaveApprovalController::class, 'reject'])->name('approvals.reject');
+
+    // Route Log Aktivitas
+    Route::get('/activity-logs', [ActivityLogController::class, 'index'])
+        ->name('activity-logs.index')
+        ->middleware('can:access-admin-panel');
 });
 
 
@@ -44,13 +50,17 @@ Route::middleware('auth')->group(function () {
 Route::middleware(['auth', 'verified', 'can:access-admin-panel'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('users/role/{role?}', [UserRolesTableController::class, 'index'])->name('users.index');
 
-    // 1. Manajemen Pengguna (CRUD)
+    // Manajemen Pengguna (CRUD)
     Route::resource('users', UserController::class)->except('index');
 
-    // 2. Manajemen Divisi (CRUD)
+    // Manajemen Divisi (CRUD)
     Route::resource('divisions', DivisionController::class);
     Route::post('divisions/{division}/add-member', [DivisionController::class, 'addMember'])->name('divisions.addMember');
     Route::post('divisions/remove-member/{user}', [DivisionController::class, 'removeMember'])->name('divisions.removeMember');
+
+    // Route Log Aktivitas
+    Route::get('/activity-logs', [ActivityLogController::class, 'index'])
+        ->name('activity-logs.index');
 });
 
 
