@@ -1,6 +1,5 @@
 <?php
 
-// app/Models/Division.php
 
 namespace App\Models;
 
