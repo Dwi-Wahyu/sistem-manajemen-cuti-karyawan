@@ -119,7 +119,7 @@
                         </div>
                         <div class="overflow-hidden">
                             <h3 class="font-bold text-gray-800 dark:text-gray-100 leading-tight truncate">{{ $req->user->name }}</h3>
-                            <p class="text-xs text-gray-500 dark:text-gray-400 truncate">{{ ucfirst(str_replace('_', ' ', $req->user->role)) }}</p>
+                            <p class="text-xs text-gray-500 dark:text-gray-400 truncate">{{ $req->user->role->title() }}</p>
                         </div>
                     </div>
 

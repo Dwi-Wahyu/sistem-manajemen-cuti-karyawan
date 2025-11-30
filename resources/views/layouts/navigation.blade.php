@@ -171,7 +171,7 @@
                             {{ Auth::user()->name }}
                         </p>
                         <p class="text-xs text-gray-500 dark:text-gray-400 truncate">
-                            {{ ucfirst(str_replace('_', ' ', Auth::user()->role)) }}
+                            {{ Auth::user()->role->title() }}
                         </p>
                     </div>
 

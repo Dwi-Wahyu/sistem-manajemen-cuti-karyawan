@@ -3,6 +3,8 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail; // Uncomment jika ingin verifikasi email
+
+use App\Enums\UserRole;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -52,6 +54,7 @@ class User extends Authenticatable
         'password' => 'hashed',
         'join_date' => 'date',          // Cast ke Carbon date object
         'is_active' => 'boolean',       // Cast ke boolean
+        'role' => UserRole::class
     ];
 
     // --- RELASI DATABASE ---
@@ -85,23 +88,23 @@ class User extends Authenticatable
     // --- ROLE CHECKER METHODS (HELPER) ---
     // Metode ini digunakan di Policy, Controller, dan View untuk pengecekan hak akses.
 
-    public function isAdmin()
+    public function isAdmin(): bool
     {
-        return $this->role === 'admin';
+        return $this->role === UserRole::Admin;
     }
 
-    public function isHrd()
+    public function isHrd(): bool
     {
-        return $this->role === 'hrd';
+        return $this->role === UserRole::Hrd;
     }
 
-    public function isDivisionHead()
+    public function isDivisionHead(): bool
     {
-        return $this->role === 'division_head';
+        return $this->role === UserRole::DivisionHead;
     }
 
-    public function isEmployee()
+    public function isEmployee(): bool
     {
-        return $this->role === 'employee';
+        return $this->role === UserRole::Employee;
     }
 }
