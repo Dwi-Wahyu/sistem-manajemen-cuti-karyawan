@@ -22,7 +22,7 @@ class UserFactory extends Factory
             'username' => fake()->unique()->userName(),
             'email' => fake()->unique()->safeEmail(),
             'email_verified_at' => now(),
-            'password' => static::$password ??= Hash::make('password'),
+            'password' => 'password',
             'remember_token' => Str::random(10),
 
             // --- Kolom Tambahan Sesuai Model User ---
@@ -38,7 +38,7 @@ class UserFactory extends Factory
             // Kita gunakan Division::factory() sebagai default. 
             // Namun, saat Seeding massal, kita akan menimpa (override) nilai ini
             // agar tidak membuat 1 divisi baru untuk setiap 1 user.
-            'division_id' => Division::factory(),
+            // 'division_id' => Division::factory(),
         ];
     }
 

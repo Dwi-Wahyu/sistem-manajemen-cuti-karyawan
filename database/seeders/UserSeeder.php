@@ -14,31 +14,26 @@ class UserSeeder extends Seeder
     public function run(): void
     {
         // Buat 5 ADMIN
-        User::factory(5)->admin()->create([
+        User::factory(1)->admin()->create([
+            'username' => 'admin',
+            'name' => 'Administrator',
+            'password' => 'password',
+        ]);
+        User::factory(4)->admin()->create([
             'password' => 'password',
         ]);
 
         // Buat 15 HRD
-        User::factory(15)->hrd()->create([
+        User::factory(1)->hrd()->create([
+            'username' => 'hrd',
+            'name' => 'User Hrd',
             'password' => 'password',
         ]);
-
-        // Buat 10 division_head
-        User::factory(10)->divisionHead()->create([
+        User::factory(14)->hrd()->create([
             'password' => 'password',
         ]);
 
         // Buat 10 Divisi
-        Division::factory(10)->create()->each(function ($division) {
-            $head = User::where('role', 'division_head')
-                ->whereNull('division_id') // Cari yang division_id-nya NULL
-                ->first();
-            if ($head) {
-                $head->update([
-                    'role' => 'division_head',
-                    'division_id' => null,
-                ]);
-            }
-        });
+        Division::factory(10)->create();
     }
 }

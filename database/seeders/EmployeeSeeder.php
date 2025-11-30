@@ -22,8 +22,8 @@ class EmployeeSeeder extends Seeder
         }
 
         // Konfigurasi Jumlah
-        $totalEmployee = 1000; // Target total
-        $chunkSize = 50;
+        $totalEmployee = 500; // Target total
+        $chunkSize = 250;
 
         $this->command->info("Memulai generate $totalEmployee karyawan...");
 

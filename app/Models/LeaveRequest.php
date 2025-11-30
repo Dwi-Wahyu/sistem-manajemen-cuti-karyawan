@@ -1,7 +1,5 @@
 <?php
 
-// app/Models/LeaveRequest.php
-
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -11,7 +9,7 @@ class LeaveRequest extends Model
 {
     use HasFactory;
 
-    protected $guarded = ['id']; // Gunakan guarded agar lebih mudah
+    protected $guarded = ['id'];
 
     protected $casts = [
         'start_date' => 'date',
