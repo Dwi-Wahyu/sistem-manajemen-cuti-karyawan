@@ -72,24 +72,6 @@
 
                 @can('access-admin-panel')
                 <div class="pt-4 pb-1">
-                    <p class="px-4 text-xs font-semibold text-gray-400 uppercase tracking-wider">Admin Panel</p>
-                </div>
-
-                <a href="{{ route('approvals.index') }}" class="flex items-center px-4 py-2 text-sm font-medium rounded-lg transition-colors duration-150 hover:bg-gray-100 dark:hover:bg-gray-700 {{ request()->routeIs('approvals.*') ? 'bg-indigo-50 text-indigo-600 dark:bg-gray-900 dark:text-indigo-400' : 'text-gray-600 dark:text-gray-400' }}">
-                    <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
-                    {{ __('Persetujuan Cuti') }}
-                </a>
-
-                <a href="{{ route('admin.divisions.index') }}" class="flex items-center px-4 py-2 text-sm font-medium rounded-lg transition-colors duration-150 hover:bg-gray-100 dark:hover:bg-gray-700 {{ request()->routeIs('admin.divisions.*') ? 'bg-indigo-50 text-indigo-600 dark:bg-gray-900 dark:text-indigo-400' : 'text-gray-600 dark:text-gray-400' }}">
-                    <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
-                    </svg>
-                    {{ __('Manajemen Divisi') }}
-                </a>
-
-                <div class="pt-4 pb-1">
                     <p class="px-4 text-xs font-semibold text-gray-400 uppercase tracking-wider">Manajemen Pengguna</p>
                 </div>
 
@@ -125,6 +107,24 @@
                     </svg>
                     {{ __('Karyawan') }}
                 </a>
+
+                <div class="pt-4 pb-1">
+                    <p class="px-4 text-xs font-semibold text-gray-400 uppercase tracking-wider">Pengaturan</p>
+                </div>
+
+                <a href="{{ route('admin.divisions.index') }}" class="flex items-center px-4 py-2 text-sm font-medium rounded-lg transition-colors duration-150 hover:bg-gray-100 dark:hover:bg-gray-700 {{ request()->routeIs('admin.divisions.*') ? 'bg-indigo-50 text-indigo-600 dark:bg-gray-900 dark:text-indigo-400' : 'text-gray-600 dark:text-gray-400' }}">
+                    <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                    </svg>
+                    {{ __('Manajemen Divisi') }}
+                </a>
+
+                <a href="{{ route('activity-logs.index') }}" class="flex items-center px-4 py-2 text-sm font-medium rounded-lg transition-colors duration-150 hover:bg-gray-100 dark:hover:bg-gray-700 {{ request()->routeIs('activity-logs.index') ? 'bg-indigo-50 text-indigo-600 dark:bg-gray-900 dark:text-indigo-400' : 'text-gray-600 dark:text-gray-400' }}">
+                    <svg class="w-5 h-5 mr-3" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12a7.5 7.5 0 0 0 15 0m-15 0a7.5 7.5 0 1 1 15 0m-15 0H3m16.5 0H21m-1.5 0H12m-8.457 3.077 1.41-.513m14.095-5.13 1.41-.513M5.106 17.785l1.15-.964m11.49-9.642 1.149-.964M7.501 19.795l.75-1.3m7.5-12.99.75-1.3m-6.063 16.658.26-1.477m2.605-14.772.26-1.477m0 17.726-.26-1.477M10.698 4.614l-.26-1.477M16.5 19.794l-.75-1.299M7.5 4.205 12 12m6.894 5.785-1.149-.964M6.256 7.178l-1.15-.964m15.352 8.864-1.41-.513M4.954 9.435l-1.41-.514M12.002 12l-3.75 6.495" />
+                    </svg>
+                    {{ __('Log Aktivitas') }}
+                </a>
                 @endcan
 
 
@@ -155,17 +155,6 @@
                             </svg>
                             {{ __('Profile') }}
                         </a>
-
-                        {{-- Link: Log Aktivitas --}}
-                        @if(Auth::user()->isAdmin())
-                        <a href="{{ route('activity-logs.index') }}" class="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
-                            <svg class="w-4 h-4 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12a7.5 7.5 0 0 0 15 0m-15 0a7.5 7.5 0 1 1 15 0m-15 0H3m16.5 0H21m-1.5 0H12m-8.457 3.077 1.41-.513m14.095-5.13 1.41-.513M5.106 17.785l1.15-.964m11.49-9.642 1.149-.964M7.501 19.795l.75-1.3m7.5-12.99.75-1.3m-6.063 16.658.26-1.477m2.605-14.772.26-1.477m0 17.726-.26-1.477M10.698 4.614l-.26-1.477M16.5 19.794l-.75-1.299M7.5 4.205 12 12m6.894 5.785-1.149-.964M6.256 7.178l-1.15-.964m15.352 8.864-1.41-.513M4.954 9.435l-1.41-.514M12.002 12l-3.75 6.495" />
-                            </svg>
-
-                            {{ __('Log Aktivitas') }}
-                        </a>
-                        @endif
 
                         <div class="border-t border-gray-100 dark:border-gray-700 my-1"></div>
 

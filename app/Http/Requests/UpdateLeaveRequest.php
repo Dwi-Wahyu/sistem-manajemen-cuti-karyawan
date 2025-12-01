@@ -36,7 +36,7 @@ class UpdateLeaveRequest extends FormRequest
             'end_date' => 'required|date|after_or_equal:start_date',
             'reason' => 'required|string|max:1000',
             // File opsional saat update (nullable)
-            'medical_certificate' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:4096',
+            'medical_certificate' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:2048',
         ];
     }
 
@@ -48,7 +48,7 @@ class UpdateLeaveRequest extends FormRequest
             'start_date.required' => 'Tanggal mulai wajib diisi.',
             'end_date.after_or_equal' => 'Tanggal selesai harus sama atau setelah tanggal mulai.',
             'medical_certificate.mimes' => 'Lampiran harus berformat JPG, JPEG, PNG, atau PDF.',
-            'medical_certificate.max' => 'Ukuran lampiran maksimal 4 MB.',
+            'medical_certificate.max' => 'Ukuran lampiran maksimal 2 MB.',
         ];
     }
 

@@ -58,13 +58,13 @@
 
             {{-- Form Filter dan Sortir --}}
             <form method="GET" action="{{ route('admin.users.index') }}" class="mb-6 bg-gray-50 dark:bg-gray-700/50 p-4 rounded-lg shadow-inner border border-gray-100 dark:border-gray-600">
-                <div class="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-6 gap-4">
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
                     {{-- Filter Divisi --}}
                     {{-- Tampilkan filter hanya jika user bukan kepala divisi --}}
                     @unless (Auth::user()->isDivisionHead())
                     <div>
                         <x-input-label for="division_id" :value="__('Divisi')" class="dark:text-gray-300" />
-                        <select name="division_id" id="division_id" class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-900 dark:text-gray-300 shadow-sm focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 sm:text-sm">
+                        <select name="division_id" id="division_id" onchange="this.form.submit()" class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-900 dark:text-gray-300 shadow-sm focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 sm:text-sm">
                             <option value="">Semua Divisi</option>
                             @foreach ($divisions as $id => $name)
                             <option value="{{ $id }}" {{ request('division_id') == $id ? 'selected' : '' }}>{{ $name }}</option>
@@ -76,7 +76,7 @@
                     {{-- Filter Status --}}
                     <div>
                         <x-input-label for="status" :value="__('Status Aktif')" class="dark:text-gray-300" />
-                        <select name="status" id="status" class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-900 dark:text-gray-300 shadow-sm focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 sm:text-sm">
+                        <select onchange="this.form.submit()" name="status" id="status" class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-900 dark:text-gray-300 shadow-sm focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 sm:text-sm">
                             <option value="">Semua</option>
                             <option value="active" {{ request('status') == 'active' ? 'selected' : '' }}>Aktif</option>
                             <option value="inactive" {{ request('status') == 'inactive' ? 'selected' : '' }}>Tidak Aktif</option>
@@ -100,13 +100,6 @@
                             <option value="join_date" {{ request('sort_by') == 'join_date' ? 'selected' : '' }}>Tgl Gabung</option>
                         </select>
                     </div>
-
-                    {{-- Tombol Submit --}}
-                    <div class="col-span-full lg:col-span-1 flex items-end">
-                        <button type="submit" class="w-full justify-center inline-flex items-center px-4 py-2 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest bg-gray-600 hover:bg-gray-700 dark:bg-gray-500 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transition ease-in-out duration-150">
-                            Filter
-                        </button>
-                    </div>
                 </div>
             </form>
 
@@ -128,7 +121,7 @@
                         </tr>
                     </thead>
                     <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
-                        @foreach ($users as $user)
+                        @forelse ($users as $user)
                         <tr class="hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
                             <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-gray-100">{{ $user->name }}</td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
@@ -138,7 +131,7 @@
 
                             @unless ($currentRoleEnum)
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
-                                {{ ucfirst(str_replace('_', ' ', $user->role)) }}
+                                {{ $user->role->title() }}
                             </td>
                             @endunless
 
@@ -161,7 +154,19 @@
                                 @endcan
                             </td>
                         </tr>
-                        @endforeach
+                        @empty
+                        <tr>
+                            <td colspan="7" class="px-6 py-12 text-center text-gray-500 dark:text-gray-400">
+                                <div class="flex flex-col items-center justify-center">
+                                    <svg class="w-12 h-12 text-gray-300 dark:text-gray-600 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                                    </svg>
+                                    <p class="text-lg font-medium">Tidak ada data pengguna.</p>
+                                    <p class="text-sm">Coba ubah filter pencarian Anda atau tambahkan pengguna baru.</p>
+                                </div>
+                            </td>
+                        </tr>
+                        @endforelse
                     </tbody>
                 </table>
             </div>

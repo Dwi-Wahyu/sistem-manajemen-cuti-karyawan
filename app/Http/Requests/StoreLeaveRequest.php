@@ -28,7 +28,7 @@ class StoreLeaveRequest extends FormRequest
             'start_date' => 'required|date',
             'end_date' => 'required|date|after_or_equal:start_date',
             'reason' => 'required|string|max:1000',
-            'medical_certificate' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:4096',
+            'medical_certificate' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:2048',
         ];
     }
 
@@ -50,7 +50,7 @@ class StoreLeaveRequest extends FormRequest
 
             'medical_certificate.file' => 'Lampiran harus berupa file.',
             'medical_certificate.mimes' => 'Lampiran harus berformat JPG, JPEG, PNG, atau PDF.',
-            'medical_certificate.max' => 'Ukuran lampiran maksimal 4 MB.',
+            'medical_certificate.max' => 'Ukuran lampiran maksimal 2 MB.',
         ];
     }
 
