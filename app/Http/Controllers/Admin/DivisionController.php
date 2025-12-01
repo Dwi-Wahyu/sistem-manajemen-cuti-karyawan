@@ -169,8 +169,6 @@ class DivisionController extends Controller
         return redirect()->route('admin.divisions.index')->with('success', 'Divisi berhasil dihapus.');
     }
 
-    // --- FITUR TAMBAHAN: MANAJEMEN ANGGOTA ---
-
     /**
      * Tambah anggota ke divisi.
      */

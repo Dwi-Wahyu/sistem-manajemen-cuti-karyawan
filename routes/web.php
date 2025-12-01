@@ -29,6 +29,8 @@ Route::middleware('auth')->group(function () {
     // --- Route Pengajuan Cuti (Employee Features) ---
     Route::resource('leave-requests', LeaveRequestController::class);
     Route::post('leave-requests/{leaveRequest}/cancel', [LeaveRequestController::class, 'cancel'])->name('leave-requests.cancel');
+    Route::get('/leave-requests/{leaveRequest}/pdf', [LeaveRequestController::class, 'generatePdf'])
+        ->name('leave-requests.download.pdf');
 
     // --- Route Daftar Karyawan Divisi ---
     Route::get('my-employees', [UserRolesTableController::class, 'index'])->name('division.employee.list');

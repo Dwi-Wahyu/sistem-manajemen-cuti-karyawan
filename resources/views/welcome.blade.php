@@ -34,7 +34,7 @@
                 <a href="{{ url('/dashboard') }}" class="text-sm font-bold text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300">Dashboard</a>
                 @else
                 <a href="{{ route('login') }}" class="text-sm font-bold bg-primary-600 hover:bg-primary-700 text-white py-2.5 px-5 rounded-full transition-all shadow-lg shadow-primary-600/30 dark:shadow-primary-900/50">
-                    Masuk / Daftar
+                    Masuk
                 </a>
                 @endauth
                 @endif

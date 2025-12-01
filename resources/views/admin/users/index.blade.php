@@ -59,8 +59,9 @@
             {{-- Form Filter dan Sortir --}}
             <form method="GET" action="{{ route('admin.users.index') }}" class="mb-6 bg-gray-50 dark:bg-gray-700/50 p-4 rounded-lg shadow-inner border border-gray-100 dark:border-gray-600">
                 <div class="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-6 gap-4">
-
                     {{-- Filter Divisi --}}
+                    {{-- Tampilkan filter hanya jika user bukan kepala divisi --}}
+                    @unless (Auth::user()->isDivisionHead())
                     <div>
                         <x-input-label for="division_id" :value="__('Divisi')" class="dark:text-gray-300" />
                         <select name="division_id" id="division_id" class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-900 dark:text-gray-300 shadow-sm focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 sm:text-sm">
@@ -70,6 +71,7 @@
                             @endforeach
                         </select>
                     </div>
+                    @endunless
 
                     {{-- Filter Status --}}
                     <div>

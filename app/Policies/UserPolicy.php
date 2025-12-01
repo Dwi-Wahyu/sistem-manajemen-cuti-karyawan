@@ -12,7 +12,6 @@ class UserPolicy
      */
     public function before(User $user, string $ability): bool|null
     {
-
         return $user->isAdmin() || $user->isHrd() || $user->isDivisionHead();
     }
 

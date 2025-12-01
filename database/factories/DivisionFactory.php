@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\Division;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -37,9 +38,24 @@ class DivisionFactory extends Factory
 
             'description' => $divisions[$name],
 
-            'head_user_id' => User::factory()->divisionHead(),
-
             'established_date' => $this->faker->date(),
         ];
+    }
+
+    /**
+     * Setelah divisi dibuat, buat kepala divisinya dan hubungkan dua arah
+     */
+    public function configure()
+    {
+        return $this->afterCreating(function (Division $division) {
+            $head = User::factory()
+                ->divisionHead()
+                ->create([
+                    'division_id' => $division->id,
+                ]);
+
+            // Hubungkan dari sisi divisi ke user
+            $division->update(['head_user_id' => $head->id]);
+        });
     }
 }

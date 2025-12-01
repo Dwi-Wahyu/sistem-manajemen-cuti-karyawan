@@ -7,6 +7,7 @@ use App\Http\Requests\StoreLeaveRequest;
 use App\Models\LeaveRequest;
 use App\Models\LeaveType;
 use App\Services\LeaveRequestService;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 
@@ -88,5 +89,22 @@ class LeaveRequestController extends Controller
         // Biasanya kita tidak menghapus data fisik (soft delete) atau cukup pakai cancel.
         // Kita gunakan cancel() saja untuk logic bisnis.
         return $this->cancel($leaveRequest);
+    }
+
+    public function generatePdf(LeaveRequest $leaveRequest)
+    {
+        // 1. Policy Check
+        // Akan melempar 403 jika Policy gagal (Status belum Approved atau bukan pemilik)
+        $this->authorize('download', $leaveRequest);
+
+        // 2. Eager Load data yang dibutuhkan untuk tanda tangan
+        $leaveRequest->load('user.division.head', 'hrdApprover', 'leaderApprover');
+
+        // 3. Generate PDF dari Blade View
+        $pdf = Pdf::loadView('pdfs.leave_letter', compact('leaveRequest'));
+
+        // 4. Output: Download the file
+        $filename = 'Surat_Cuti_' . $leaveRequest->user->name . '_' . $leaveRequest->start_date->format('Ymd') . '.pdf';
+        return $pdf->download($filename);
     }
 }
