@@ -52,7 +52,7 @@ trait LogsActivity
 
         // Simpan ke Database
         ActivityLog::create([
-            'user_id'      => Auth::id(), // ID user yang login
+            'user_id'      => Auth::id(),
             'action'       => $action,
             'description'  => $description,
             'subject_type' => get_class($model),

@@ -66,7 +66,7 @@
                                         {{ $log->user->name ?? 'System/Deleted User' }}
                                     </div>
                                     <div class="text-xs text-gray-500">
-                                        {{ $log->user->role->title() ?? '-' }}
+                                        {{ $log->user?->role?->title() ?? '-' }}
                                     </div>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap">
@@ -78,7 +78,8 @@
                                     default => 'gray'
                                     };
                                     @endphp
-                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-{{ $color }}-100 text-{{ $color }}-800 dark:bg-{{ $color }}-900 dark:text-{{ $color }}-300 border border-{{ $color }}-200">
+
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-{{ $color }}-100 text-{{ $color }}-800 border border-{{ $color }}-200 dark:bg-{{ $color }}-900/50 dark:text-{{ $color }}-300 dark:border-{{ $color }}-800">
                                         {{ strtoupper($log->action) }}
                                     </span>
                                 </td>
@@ -114,7 +115,7 @@
 
                 {{-- Pagination --}}
                 <div class="px-6 py-4 border-t border-gray-200 dark:border-gray-700">
-                    {{ $logs->links() }}
+                    {{ $logs->links('pagination.custom') }}
                 </div>
             </div>
         </div>

@@ -7,6 +7,7 @@ use App\Models\User;
 use App\Models\Division;
 use App\Enums\LeaveRequestStatus;
 use App\Enums\UserRole; // Pastikan Enum UserRole sudah di-import
+use App\Models\ActivityLog;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -84,6 +85,12 @@ class DashboardController extends Controller
         // Karyawan belum eligible (masa kerja < 1 tahun)
         $ineligibleEmployeesCount = User::where('join_date', '>', now()->subYear())->count();
 
+        // --- Ambil 5 Log Terakhir ---
+        $latestLogs = ActivityLog::with('user')
+            ->latest()
+            ->take(5)
+            ->get();
+
         return [
             'total_employees' => User::where('role', UserRole::Employee)->count(),
             'total_divisions' => Division::count(),
@@ -100,6 +107,8 @@ class DashboardController extends Controller
             'global_pending' => LeaveRequest::whereIn('status', [LeaveRequestStatus::Pending, LeaveRequestStatus::ApprovedByLeader])->count(),
 
             'ineligible_count' => $ineligibleEmployeesCount,
+
+            'latest_logs' => $latestLogs,
         ];
     }
 

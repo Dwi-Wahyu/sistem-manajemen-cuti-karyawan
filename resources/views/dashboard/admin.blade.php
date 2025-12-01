@@ -45,6 +45,8 @@
                 </a>
             </div>
 
+
+
             {{-- Daftar Karyawan Belum Eligible --}}
             <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg p-6 border border-gray-200 dark:border-gray-700 mt-6">
                 <h4 class="text-lg font-medium text-gray-900 dark:text-gray-100 mb-4">
@@ -61,6 +63,76 @@
 
             {{-- Status Terakhir Admin --}}
             <x-last-request-status :data="$data" />
+
+            {{-- LOG AKTIVITAS TERAKHIR --}}
+            <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg p-6 border border-gray-200 dark:border-gray-700 mt-6">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-lg font-medium text-gray-900 dark:text-gray-100">
+                        Aktivitas Sistem Terakhir
+                    </h3>
+                    <a href="{{ route('admin.activity-logs.index') }}" class="text-sm text-indigo-600 dark:text-indigo-400 hover:underline">
+                        Lihat Semua &rarr;
+                    </a>
+                </div>
+
+                <div class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                        <thead class="bg-gray-50 dark:bg-gray-700/50">
+                            <tr>
+                                <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Waktu</th>
+                                <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Pelaku</th>
+                                <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Aksi</th>
+                                <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Deskripsi</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
+                            @forelse($data['latest_logs'] as $log)
+                            <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/50 transition">
+                                {{-- Waktu --}}
+                                <td class="px-4 py-2 whitespace-nowrap text-xs text-gray-500 dark:text-gray-400">
+                                    {{ $log->created_at->diffForHumans() }}
+                                </td>
+
+                                {{-- Pelaku --}}
+                                <td class="px-4 py-2 whitespace-nowrap">
+                                    <div class="text-sm font-medium text-gray-900 dark:text-white">
+                                        {{ $log->user->name ?? 'System' }}
+                                    </div>
+                                </td>
+
+                                {{-- Badge Aksi --}}
+                                <td class="px-4 py-2 whitespace-nowrap">
+                                    @php
+                                    $color = match($log->action) {
+                                    'created', 'approved', 'restored' => 'green',
+                                    'updated' => 'blue',
+                                    'deleted', 'rejected', 'cancelled' => 'red',
+                                    default => 'gray'
+                                    };
+                                    @endphp
+                                    <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-{{ $color }}-100 text-{{ $color }}-800 dark:bg-{{ $color }}-900 dark:text-{{ $color }}-300">
+                                        {{ strtoupper($log->action) }}
+                                    </span>
+                                </td>
+
+                                {{-- Deskripsi --}}
+                                <td class="px-4 py-2 text-sm text-gray-500 dark:text-gray-300">
+                                    <span class="truncate block max-w-xs" title="{{ $log->description }}">
+                                        {{ $log->description }}
+                                    </span>
+                                </td>
+                            </tr>
+                            @empty
+                            <tr>
+                                <td colspan="4" class="px-4 py-4 text-center text-sm text-gray-500 dark:text-gray-400">
+                                    Belum ada aktivitas tercatat.
+                                </td>
+                            </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
     </div>
 </x-app-layout>
