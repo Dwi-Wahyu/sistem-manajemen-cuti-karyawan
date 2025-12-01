@@ -9,8 +9,6 @@ use Illuminate\Auth\Access\Response;
 
 class LeaveRequestPolicy
 {
-    // ... method before (opsional) ...
-
     /**
      * Tentukan apakah pengguna dapat melihat model pengajuan cuti yang diberikan.
      */
@@ -26,6 +24,23 @@ class LeaveRequestPolicy
         return $user->id === $leaveRequest->user_id
             ? Response::allow()
             : Response::deny('Anda tidak memiliki akses ke pengajuan cuti ini.');
+    }
+
+    public function update(User $user, LeaveRequest $leaveRequest): bool
+    {
+        // Validasi Kepemilikan
+        // User yang login HARUS sama dengan user yang membuat pengajuan.
+        if ($user->id !== $leaveRequest->user_id) {
+            return false;
+        }
+
+        // Validasi Status
+        // Hanya boleh edit jika statusnya masih 'Pending' atau 'Rejected'.
+        // Jika sudah 'ApprovedByLeader' atau 'Approved', tidak boleh diubah lagi.
+        return in_array($leaveRequest->status, [
+            LeaveRequestStatus::Pending,
+            LeaveRequestStatus::Rejected
+        ]);
     }
 
     public function download(User $user, LeaveRequest $leaveRequest): Response|bool
@@ -53,7 +68,18 @@ class LeaveRequestPolicy
 
     public function delete(User $user, LeaveRequest $leaveRequest): bool
     {
-        // Hanya Admin, HRD yang boleh menghapus permanen
+        // Hanya Admin, HRD, Karyawan yang membuat yang boleh menghapus permanen
         return $user->isAdmin() || $user->isHrd() || $leaveRequest->user() === $user->id;
+    }
+
+    public function cancel(User $user, LeaveRequest $leaveRequest): bool
+    {
+        // Cek Pemilik
+        if ($leaveRequest->user_id !== $user->id) {
+            return false;
+        }
+
+        // Jangan biarkan user membatalkan jika sudah disetujui/ditolak
+        return $leaveRequest->status === LeaveRequestStatus::Pending;
     }
 }

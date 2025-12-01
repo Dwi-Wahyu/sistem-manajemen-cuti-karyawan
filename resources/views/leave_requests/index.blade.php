@@ -81,12 +81,24 @@
                                     @endif
                                 </td>
 
-                                <td class="py-4 whitespace-nowrap text-center text-sm font-medium">
-                                    <a href="{{ route('leave-requests.show', $leave->id) }}"
-                                        class="text-indigo-600 ml-7 hover:text-indigo-900 dark:text-indigo-400 dark:hover:text-indigo-300 transition-colors flex items-center gap-1 hover:underline">
+                                <td class="px-6 py-4 whitespace-nowrap text-center text-sm font-medium">
+                                    <div class="flex justify-end gap-3">
+                                        <a href="{{ route('leave-requests.show', $leave->id) }}"
+                                            class="text-indigo-600 hover:text-indigo-900 dark:text-indigo-400 dark:hover:text-indigo-300 transition-colors flex items-center gap-1 hover:underline">
 
-                                        Detail
-                                    </a>
+                                            Detail
+                                        </a>
+
+                                        {{-- Bisa diedit jika status pending atau rejected --}}
+                                        {{-- Di dalam @if ($leave->status === ...::Pending) atau Rejected --}}
+                                        @if (in_array($leave->status, [\App\Enums\LeaveRequestStatus::Pending, \App\Enums\LeaveRequestStatus::Rejected]))
+                                        <a href="{{ route('leave-requests.edit', $leave->id) }}" class="text-yellow-600 hover:text-yellow-700 dark:text-yellow-400 transition-colors flex items-center gap-1 hover:underline">
+
+                                            Edit
+                                        </a>
+                                        @endif
+                                    </div>
+
                                 </td>
                             </tr>
                             @empty

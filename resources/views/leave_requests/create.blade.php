@@ -7,7 +7,7 @@
 
     <div class="py-12">
         <div class="max-w-4xl mx-auto sm:px-6 lg:px-8">
-            
+
             {{-- Info Kuota --}}
             <div class="bg-blue-50 dark:bg-blue-900/50 border-l-4 border-blue-400 dark:border-blue-500 p-4 mb-6 shadow-sm rounded-r">
                 <div class="flex">
@@ -25,33 +25,33 @@
             </div>
 
             <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg p-6 border border-gray-200 dark:border-gray-700">
-                
+
                 @if ($errors->any())
-                    <div class="mb-4 bg-red-100 dark:bg-red-900/50 border border-red-400 dark:border-red-500 text-red-700 dark:text-red-100 px-4 py-3 rounded relative">
-                        <strong class="font-bold">Ada kesalahan!</strong>
-                        <ul>
-                            @foreach ($errors->all() as $error)
-                                <li>{{ $error }}</li>
-                            @endforeach
-                        </ul>
-                    </div>
+                <div class="mb-4 bg-red-100 dark:bg-red-900/50 border border-red-400 dark:border-red-500 text-red-700 dark:text-red-100 px-4 py-3 rounded relative">
+                    <strong class="font-bold">Ada kesalahan!</strong>
+                    <ul>
+                        @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
                 @endif
 
                 <form method="POST" action="{{ route('leave-requests.store') }}" enctype="multipart/form-data">
                     @csrf
-                    
+
                     <div class="space-y-6">
-                        
+
                         {{-- Jenis Cuti --}}
                         <div>
                             <x-input-label for="leave_type_id" :value="__('Jenis Cuti')" />
                             <select id="leave_type_id" name="leave_type_id" class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-900 dark:text-gray-300 shadow-sm focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 sm:text-sm" required onchange="toggleAttachment(this)">
                                 <option value="">-- Pilih Jenis Cuti --</option>
                                 @foreach ($leaveTypes as $type)
-                                    <option value="{{ $type->id }}" data-name="{{ $type->name }}" {{ old('leave_type_id') == $type->id ? 'selected' : '' }}>
-                                        {{ $type->name }} 
-                                        {{ $type->name == 'Cuti Tahunan' ? '(Mengurangi Kuota)' : '(Perlu Dokumen)' }}
-                                    </option>
+                                <option value="{{ $type->id }}" data-name="{{ $type->name }}" {{ old('leave_type_id') == $type->id ? 'selected' : '' }}>
+                                    {{ $type->name }}
+                                    {{ $type->name == 'Cuti Tahunan' ? '(Mengurangi Kuota)' : '(Perlu Dokumen)' }}
+                                </option>
                                 @endforeach
                             </select>
                         </div>
@@ -80,7 +80,7 @@
                         <div id="attachment-container" class="hidden p-4 bg-gray-50 dark:bg-gray-700 rounded border border-gray-200 dark:border-gray-600">
                             <x-input-label for="medical_certificate" :value="__('Upload Surat Dokter (Wajib untuk Cuti Sakit)')" />
                             <input id="medical_certificate" name="medical_certificate" type="file" accept=".jpg,.jpeg,.png,.pdf" class="mt-1 block w-full text-sm text-gray-500 dark:text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 dark:file:bg-indigo-900 file:text-indigo-700 dark:file:text-indigo-300 hover:file:bg-indigo-100 dark:hover:file:bg-indigo-800 transition-colors" />
-                            <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">Format: JPG, PNG, PDF. Maks: 2MB.</p>
+                            <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">Format: JPG, PNG, PDF. Maks: 4MB.</p>
                         </div>
 
                         {{-- Informasi Kontak (Opsional) --}}
@@ -95,9 +95,9 @@
                             </div>
                         </div>
 
-                        <div class="flex items-center gap-4">
-                            <x-primary-button>{{ __('Ajukan Cuti') }}</x-primary-button>
+                        <div class="flex items-center gap-4 justify-end">
                             <a href="{{ route('leave-requests.index') }}" class="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100">{{ __('Batal') }}</a>
+                            <x-primary-button>{{ __('Ajukan Cuti') }}</x-primary-button>
                         </div>
                     </div>
                 </form>
@@ -110,7 +110,7 @@
             const selectedOption = select.options[select.selectedIndex];
             const typeName = selectedOption.getAttribute('data-name');
             const container = document.getElementById('attachment-container');
-            
+
             // Tampilkan upload jika nama cuti mengandung kata 'Sakit'
             if (typeName && typeName.includes('Sakit')) {
                 container.classList.remove('hidden');

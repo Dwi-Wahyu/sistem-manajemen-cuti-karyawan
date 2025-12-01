@@ -3,3 +3,5 @@ fix daftar karyawan saya untuk division_head (masalahnya di division_id ketua)
 fix batalkan leave_request
 
 fix hilangkan 2 tombol konfirmasi division_head jika sudah melakukan aksi
+
+fix permission crud holidays

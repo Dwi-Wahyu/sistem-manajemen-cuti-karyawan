@@ -12,6 +12,6 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         // Panggil Seeder
-        $this->call([LeaveTypeSeeder::class, UserSeeder::class, EmployeeSeeder::class, LeaveRequestSeeder::class]);
+        $this->call([LeaveTypeSeeder::class, UserSeeder::class, EmployeeSeeder::class, LeaveRequestSeeder::class, HolidaySeeder::class,]);
     }
 }

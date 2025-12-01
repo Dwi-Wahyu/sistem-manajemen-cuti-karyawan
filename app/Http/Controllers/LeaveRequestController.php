@@ -4,12 +4,14 @@ namespace App\Http\Controllers;
 
 use App\Enums\LeaveRequestStatus;
 use App\Http\Requests\StoreLeaveRequest;
+use App\Http\Requests\UpdateLeaveRequest;
 use App\Models\LeaveRequest;
 use App\Models\LeaveType;
 use App\Services\LeaveRequestService;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Storage;
 
 class LeaveRequestController extends Controller
 {
@@ -67,14 +69,28 @@ class LeaveRequestController extends Controller
         return view('leave_requests.show', compact('leaveRequest'));
     }
 
-    /**
-     * Membatalkan pengajuan cuti (Hanya jika masih Pending).
-     */
+    public function edit(LeaveRequest $leaveRequest)
+    {
+        $this->authorize('update', $leaveRequest);
+
+        $leaveTypes = LeaveType::all();
+        $user = Auth::user();
+
+        return view('leave_requests.edit', compact('leaveRequest', 'leaveTypes', 'user'));
+    }
+
+    public function update(UpdateLeaveRequest $request, LeaveRequest $leaveRequest)
+    {
+        // Data yang tervalidasi bisa diambil via $request->validated()
+        $data = $request->validated();
+
+        // Panggil service untuk update logic
+        return $this->leaveRequestService->updateLeaveRequest($data, Auth::user(), $leaveRequest);
+    }
+
     public function cancel(LeaveRequest $leaveRequest)
     {
-        if (! Gate::allows('cancel-leave-request', $leaveRequest)) {
-            return back()->withErrors('Pembatalan gagal. Akses ditolak.');
-        }
+        $this->authorize('cancel', $leaveRequest);
 
         $leaveRequest->status = LeaveRequestStatus::Cancelled;
 
@@ -83,27 +99,36 @@ class LeaveRequestController extends Controller
         return redirect()->route('leave-requests.index')->with('success', 'Pengajuan cuti berhasil dibatalkan.');
     }
 
-    // Metode destroy standar (opsional, jika ingin hapus data fisik)
     public function destroy(LeaveRequest $leaveRequest)
     {
-        // Biasanya kita tidak menghapus data fisik (soft delete) atau cukup pakai cancel.
-        // Kita gunakan cancel() saja untuk logic bisnis.
-        return $this->cancel($leaveRequest);
+        $this->authorize('delete', $leaveRequest);
+
+        // Hapus File Lampiran (Bersih-bersih penyimpanan)
+        if ($leaveRequest->medical_certificate_path) {
+            if (Storage::disk('public')->exists($leaveRequest->medical_certificate_path)) {
+                Storage::disk('public')->delete($leaveRequest->medical_certificate_path);
+            }
+        }
+
+        $leaveRequest->delete();
+
+        return redirect()->route('leave-requests.index')
+            ->with('success', 'Data pengajuan cuti berhasil dihapus permanen.');
     }
 
     public function generatePdf(LeaveRequest $leaveRequest)
     {
-        // 1. Policy Check
+        // Policy Check
         // Akan melempar 403 jika Policy gagal (Status belum Approved atau bukan pemilik)
         $this->authorize('download', $leaveRequest);
 
-        // 2. Eager Load data yang dibutuhkan untuk tanda tangan
+        // Eager Load data yang dibutuhkan untuk tanda tangan
         $leaveRequest->load('user.division.head', 'hrdApprover', 'leaderApprover');
 
-        // 3. Generate PDF dari Blade View
+        // Generate PDF dari Blade View
         $pdf = Pdf::loadView('pdfs.leave_letter', compact('leaveRequest'));
 
-        // 4. Output: Download the file
+        // Output: Download the file
         $filename = 'Surat_Cuti_' . $leaveRequest->user->name . '_' . $leaveRequest->start_date->format('Ymd') . '.pdf';
         return $pdf->download($filename);
     }

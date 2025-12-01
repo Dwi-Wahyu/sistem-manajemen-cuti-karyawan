@@ -49,6 +49,18 @@
                 </a>
                 @endif
 
+                <a href="{{ route('holidays.index') }}" class="flex items-center px-4 py-2 text-sm font-medium rounded-lg transition-colors duration-150 hover:bg-gray-100 dark:hover:bg-gray-700 {{ request()->routeIs('holidays.*') ? 'bg-indigo-50 text-indigo-600 dark:bg-gray-900 dark:text-indigo-400' : 'text-gray-600 dark:text-gray-400' }}">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 mr-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-briefcase-off">
+                        <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                        <path d="M11 7h8a2 2 0 0 1 2 2v8m-1.166 2.818a1.993 1.993 0 0 1 -.834 .182h-14a2 2 0 0 1 -2 -2v-9a2 2 0 0 1 2 -2h2" />
+                        <path d="M8.185 4.158a2 2 0 0 1 1.815 -1.158h4a2 2 0 0 1 2 2v2" />
+                        <path d="M12 12v.01" />
+                        <path d="M3 13a20 20 0 0 0 11.905 1.928m3.263 -.763a20 20 0 0 0 2.832 -1.165" />
+                        <path d="M3 3l18 18" />
+                    </svg>
+                    {{ __('Kalender Libur') }}
+                </a>
+
                 @if(Auth::user()->isDivisionHead())
                 <a href="{{ route('division.employee.list') }}" class="flex items-center px-4 py-2 text-sm font-medium rounded-lg transition-colors duration-150 hover:bg-gray-100 dark:hover:bg-gray-700 {{ request()->routeIs('division.employee.list') ? 'bg-indigo-50 text-indigo-600 dark:bg-gray-900 dark:text-indigo-400' : 'text-gray-600 dark:text-gray-400' }}">
                     <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -123,10 +135,6 @@
 
             <div class="relative p-4">
 
-                {{--
-            POPOVER MENU (Muncul saat diklik)
-            Position: absolute bottom-full (muncul di atas footer)
-        --}}
                 <div x-show="userMenuOpen"
                     @click.away="userMenuOpen = false"
                     x-transition:enter="transition ease-out duration-100"
@@ -149,6 +157,7 @@
                         </a>
 
                         {{-- Link: Log Aktivitas --}}
+                        @if(Auth::user()->isAdmin())
                         <a href="{{ route('activity-logs.index') }}" class="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
                             <svg class="w-4 h-4 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12a7.5 7.5 0 0 0 15 0m-15 0a7.5 7.5 0 1 1 15 0m-15 0H3m16.5 0H21m-1.5 0H12m-8.457 3.077 1.41-.513m14.095-5.13 1.41-.513M5.106 17.785l1.15-.964m11.49-9.642 1.149-.964M7.501 19.795l.75-1.3m7.5-12.99.75-1.3m-6.063 16.658.26-1.477m2.605-14.772.26-1.477m0 17.726-.26-1.477M10.698 4.614l-.26-1.477M16.5 19.794l-.75-1.299M7.5 4.205 12 12m6.894 5.785-1.149-.964M6.256 7.178l-1.15-.964m15.352 8.864-1.41-.513M4.954 9.435l-1.41-.514M12.002 12l-3.75 6.495" />
@@ -156,6 +165,7 @@
 
                             {{ __('Log Aktivitas') }}
                         </a>
+                        @endif
 
                         <div class="border-t border-gray-100 dark:border-gray-700 my-1"></div>
 

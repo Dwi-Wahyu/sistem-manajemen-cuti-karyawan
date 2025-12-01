@@ -12,8 +12,6 @@
                 </h2>
             </div>
 
-
-
             @if($leaveRequest->status === \App\Enums\LeaveRequestStatus::Approved)
             <a href="{{ route('leave-requests.download.pdf', $leaveRequest->id) }}"
                 class="inline-flex items-center px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-md shadow-sm transition">
@@ -75,13 +73,13 @@
                         <div>
                             <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Tanggal Mulai</dt>
                             <dd class="mt-1 text-sm text-gray-900 dark:text-white sm:mt-0 sm:col-span-2">
-                                {{ $leaveRequest->start_date->format('l, d F Y') }}
+                                {{ $leaveRequest->start_date->translatedFormat('l, d F Y') }}
                             </dd>
                         </div>
                         <div>
                             <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Tanggal Selesai</dt>
                             <dd class="mt-1 text-sm text-gray-900 dark:text-white sm:mt-0 sm:col-span-2">
-                                {{ $leaveRequest->end_date->format('l, d F Y') }}
+                                {{ $leaveRequest->end_date->translatedFormat('l, d F Y') }}
                             </dd>
                         </div>
 

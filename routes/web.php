@@ -8,6 +8,7 @@ use App\Http\Controllers\Admin\DivisionController;
 use App\Http\Controllers\Admin\LeaveApprovalController;
 use App\Http\Controllers\Admin\UserRolesTableController;
 use App\Http\Controllers\Admin\ActivityLogController;
+use App\Http\Controllers\Admin\HolidayController;
 use App\Http\Controllers\LeaveRequestController;
 use App\Http\Controllers\DashboardController;
 
@@ -28,7 +29,9 @@ Route::middleware('auth')->group(function () {
 
     // --- Route Pengajuan Cuti (Employee Features) ---
     Route::resource('leave-requests', LeaveRequestController::class);
+
     Route::post('leave-requests/{leaveRequest}/cancel', [LeaveRequestController::class, 'cancel'])->name('leave-requests.cancel');
+    Route::delete('leave-requests/{leaveRequest}/delete', [LeaveRequestController::class, 'destroy'])->name('leave-requests.destroy');
     Route::get('/leave-requests/{leaveRequest}/pdf', [LeaveRequestController::class, 'generatePdf'])
         ->name('leave-requests.download.pdf');
 
@@ -45,6 +48,10 @@ Route::middleware('auth')->group(function () {
     Route::get('/activity-logs', [ActivityLogController::class, 'index'])
         ->name('activity-logs.index')
         ->middleware('can:access-admin-panel');
+
+    // --- Route CRUD (Untuk Admin & HRD) ---
+    Route::resource('holidays', HolidayController::class)
+        ->names('holidays');
 });
 
 
